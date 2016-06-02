@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       post :acs
       get :metadata
       get :logout
+      post :logout
     end
   end
 

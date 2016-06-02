@@ -24,9 +24,13 @@ class SamlController < ApplicationController
     if response.is_valid?
       session[:nameid] = response.nameid
       session[:attributes] = response.attributes
+      session[:session_index] = response.sessionindex
       @attrs = session[:attributes]
       logger.info "Sucessfully logged"
       logger.info "NAMEID: #{response.nameid}"
+      render :action => :index
+    elsif response.success?
+      reset_session
       render :action => :index
     else
       logger.info "Response Invalid. Errors: #{response.errors}"
@@ -75,6 +79,7 @@ class SamlController < ApplicationController
 
       if settings.name_identifier_value.nil?
         settings.name_identifier_value = session[:nameid]
+        settings.sessionindex = session[:session_index]
       end
 
       relayState = url_for controller: 'saml', action: 'index'
